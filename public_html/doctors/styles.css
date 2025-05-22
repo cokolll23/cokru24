@@ -1,0 +1,80 @@
+.cards-list {
+    display:flex;
+    flex-wrap:wrap;
+    width:100%;
+    max-width:1024px;
+    margin:40px auto;
+    justify-content:flex-start;
+    align-items:center;
+}
+.card {
+    background: #f2f6f7;
+    border-radius: 6px;
+    height: 80px;
+    width:200px;
+    padding:12px;
+    margin:12px;
+    filter: drop-shadow(6px 6px 3px #4444dd);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    font-size:16px;
+}
+.card:hover {
+    filter: drop-shadow(6px 6px 3px #6666ff);
+}
+h1 {
+    font: 26px/26px Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-weight: 300;
+}
+section.doctors {
+    padding:40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    font-size:18px;
+}
+.doctor-page {
+    display:block;
+    width:100%;
+}
+.doctor-add-form {
+    display:flex;
+    flex-direction:column;
+}
+.doctor-add-form>* {
+    width:400px;
+    margin:12px;
+    padding:6px;
+    border-radius:6px;
+    min-height:40px;
+    font-size:16px;
+}
+.doctor-add-form>select,.doctor-add-form>input[type=submit] {
+    width:416px;
+}
+.add-buttons {
+    display:flex;
+    justify-content:flex-start;
+    width:100%;
+    margin-top:40px;
+}
+.add-buttons button {
+    padding:6px 12px;
+    margin-right:16px;
+    height:32px;
+    border:1px solid #D2CBBD;
+    border-radius:6px;
+}
+.add-buttons button:hover {
+    filter: drop-shadow(6px 6px 3px #4444dd);
+
+}
+
+.doc-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
