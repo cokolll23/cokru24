@@ -87,12 +87,12 @@ class BooksTable extends DataManager
             (new Reference('AUTHOR', Author::class, Join::on('this.author_id', 'ref.id')))
                 ->configureJoinType('inner'),
 
-            // (new ManyToMany('AUTHORS', Author::class))
-            // ->configureTableName('book_author')
-            // ->configureLocalPrimary('id', 'book_id')
-            // ->configureLocalReference('BOOKS')
-            // ->configureRemotePrimary('id', 'author_id')
-            // ->configureRemoteReference('AUTHORS'),
+             (new ManyToMany('AUTHORS', Author::class))
+             ->configureTableName('book_author')
+             ->configureLocalPrimary('id', 'book_id')
+             ->configureLocalReference('BOOKS')
+             ->configureRemotePrimary('id', 'author_id')
+             ->configureRemoteReference('AUTHORS'),
 
             // (new Reference('PUBLISHER', Publisher::class, Join::on('this.publisher_id', 'ref.id')))
             // ->configureJoinType('inner'),
@@ -104,8 +104,8 @@ class BooksTable extends DataManager
                 ->configureRemotePrimary('id', 'publisher_id')
                 ->configureRemoteReference('PUBLISHERS'),
 
-            (new Reference('WIKIPROFILE', Wikiprofile::class, Join::on('this.wikiprofile_id', 'ref.id')))
-                ->configureJoinType('inner')
+           /* (new Reference('WIKIPROFILE', Wikiprofile::class, Join::on('this.wikiprofile_id', 'ref.id')))
+                ->configureJoinType('inner')*/
 
         ];
     }

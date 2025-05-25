@@ -14,12 +14,35 @@ use Models\Books\HospitalClientsTable as Clients;
 
 $books = Books::getList([ //быстрая выборка ORM getList необходимо обозначить Символьный код и Символьный код API здесь doctors
     'select' => [
-        'ID',
+        'id',
         'name',
-        'publish_date'
+        'publish_date',
     ],
     'filter' => []
 ])->fetchCollection();
 
-dump($books);
+foreach ($books as $i => $book){
+    echo ($book -> getName() . $book -> getPublishDate()-> format('d.m.Y'));
+}
+
+// выборка книг и связанных с ними издетельств
+$collection = Books::getList([
+    'select' => [
+        'id',
+        'name',
+        'PUBLISHERS',
+        'AUTHORS'
+    ]
+])->fetchCollection();
+
+foreach ($collection as $key => $item) {
+    foreach ($item->getPublishers() as $publisher){
+        echo 'книга '.$item->getName(). ' изательство: '.$publisher->getName().'<br/>';
+    }
+    foreach ($item->getAuthors() as $author){
+        echo 'книга '.$item->getName(). ' автор: '.$author->getName().'<br/>';
+    }
+}
+
+dump($collection);
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/footer.php");
