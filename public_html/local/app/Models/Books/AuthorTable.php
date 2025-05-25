@@ -41,6 +41,7 @@ class AuthorTable extends DataManager
      *
      * @return string
      */
+
     public static function getTableName()
     {
         return 'authors';
