@@ -22,12 +22,10 @@ use Bitrix\Main\Context,
 use Bitrix\Main\Engine\Contract;
 use \Models\Clients\ClientsListTable as Clients;
 
+global $arParams;
 
-
-class TableCurrenciesComponent extends CBitrixComponent
+class OtusTableCurrenciesComponent extends CBitrixComponent
 {
-
-    protected $request;
 
     /**
      * Подготовка параметров компонента
@@ -39,36 +37,20 @@ class TableCurrenciesComponent extends CBitrixComponent
         return $arParams;
     }
 
-
-    private function getColumn()
+    private function getList()
     {
-        $fieldMap = Bitrix\Currency\CurrencyTable::getMap();
-        $columns = [];
-        foreach ($fieldMap as $key => $field) {
-            $columns[] = array(
-                'id' => $field->getName(),
-                'name' => $field->getTitle()
-            );
-        }
-        return $columns;
-    }
 
 
-
-    private function getList( $limit = 1)
-    {
-        $list = [];
         $data = Bitrix\Currency\CurrencyTable::getList([
             'select' => ['CURRENCY', 'AMOUNT_CNT','AMOUNT','CURRENT_BASE_RATE','NUMCODE',],
-            'filter' => [],
-            'order' => []
-        ]);
+            'filter' => ['CURRENCY' => $this->$arParams["CURRENCIES"]]
+        ])->fetchAll();
 
-        while ($item = $data->fetch()) {
+       /* while ($item = $data->fetch()) {
             $list[] = array('data' => $item);
-        }
+        }*/
 
-        return $list;
+        return $data;
     }
 
 
@@ -81,28 +63,11 @@ class TableCurrenciesComponent extends CBitrixComponent
 
         try
         {
+           // echo $this->$arParams["CURRENCIES_LIST_TITLE"];
+           // die();
 
-            $this->$request = Application::getInstance()->getContext()->getRequest();
-
-            if(isset($this->$request['report_list'])){
-                $page = explode('page-', $this->$request['report_list']);
-                $page = $page[1];
-            }else{
-                $page = 1;
-            }
-
-            $this->arResult['SHOW_ROW_CHECKBOXES'] = false;
-
-            if($this->arParams['SHOW_CHECKBOXES'] == 'Y'){
-                $this->arResult['SHOW_ROW_CHECKBOXES'] = true;
-            }
-
-            $this->arResult['COLUMNS'] = $this->getColumn(); // получаем названия полей таблицы
-
-
-            $this->arResult['NUM_PAGE'] = (empty($this->arParams['NUM_PAGE']))? 20 : $this->arParams['NUM_PAGE'];
-            $this->arResult['LISTS'] = $this->getList($page, $this->arResult['NUM_PAGE']); // получаем записи таблицы
-            $this->arResult['COUNT'] =  Clients::getCount(); // количество записей
+            $this->arResult['LIST'] = $this->getList();
+            $this->arResult['LISTs'] = $this->$arParams["CURRENCIES"];
 
             // подключаем шаблон
             $this->IncludeComponentTemplate();

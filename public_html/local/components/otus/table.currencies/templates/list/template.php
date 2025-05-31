@@ -13,19 +13,10 @@
 $this->setFrameMode(true);
 
 
-$iterator = Bitrix\Currency\CurrencyTable::getList([
-    'select' => ['CURRENCY'],
-    'filter' => [],
-    'order' => []
-])->fetchAll();
-$arCurrencyTitles = [];
-
-foreach ($iterator as $currency) {
-    $arCurrencyTitles[]=$currency['CURRENCY'];
-}
+echo $arParams["CURRENCIES"];
 
 
-//dump($arParams);
+pretty_print($arResult);
 
 
 

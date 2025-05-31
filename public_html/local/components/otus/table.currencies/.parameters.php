@@ -1,33 +1,34 @@
-<?
-if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
+<?php
+if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 /** @var array $arCurrentValues */
 
-if(!CModule::IncludeModule("iblock"))
+if (!CModule::includeModule('currency')) {
     return;
+}
 
 $iterator = Bitrix\Currency\CurrencyTable::getList([
-    'select' => ['CURRENCY'],
+    'select' => ['CURRENCY','NUMCODE'],
 ]);
 
-/*$arCurrencyTitles = [];
+$arCurrencyTitles = [];
 
 foreach ($iterator as $currency) {
-    $arCurrencyTitles[]=$currency['CURRENCY'];
-}*/
+    $arCurrencyTitles[$currency['NUMCODE']] = $currency['CURRENCY'];
+}
 $arComponentParameters = array(
     "GROUPS" => array(
-        "LIST"=>array(
-            "NAME"=>GetMessage("GRID_PARAMETERS"),
-            "SORT"=>"300"
+        "LIST" => array(
+            "NAME" => GetMessage("GRID_PARAMETERS"),
+            "SORT" => "300"
         )
     ),
     "PARAMETERS" => array(
-        "CURRENCIES_LIST_TITLE" =>  array(
+        "CURRENCIES" => array(
             "PARENT" => "LIST",
-            "NAME"=>GetMessage("SHOW_ACTION_BTNS"),
-            "TYPE"=>"LIST",
-            "DEFAULT"=>"N",
-            "VALUES"=>["EUR","USD"]
+            "NAME" => GetMessage("CURR_SELECT"),
+            "TYPE" => "LIST",
+            "DEFAULT" => "N",
+            "VALUES" => $arCurrencyTitles
         ),
 
     )

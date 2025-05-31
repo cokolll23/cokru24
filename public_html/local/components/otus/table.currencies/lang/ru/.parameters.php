@@ -1,5 +1,5 @@
 <?
 $MESS["GRID_PARAMETERS"] = "Параметры";
-$MESS["SHOW_CURRENCY_RATE"] = "Показать курс валюты";
+$MESS["CURR_SELECT"] = "Выбрать валюту";
 $MESS["NUM_PAGE"] = "Количество записей на странице";
 ?>
