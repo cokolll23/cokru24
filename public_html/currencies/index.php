@@ -31,7 +31,7 @@ $APPLICATION->IncludeComponent(
 		"IBLOCK_TYPE" => "news",
 		"ITEMS_LIMIT" => "10",
 		"COMPONENT_TEMPLATE" => ".default",
-		"CURRENCIES" => "643"
+		"CURRENCIES" => "840"
 	),
 	false
 );
