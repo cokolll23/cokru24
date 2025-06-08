@@ -16,6 +16,7 @@ Loc::loadMessages(__FILE__);
 $request = HttpApplication::getInstance()->getContext()->getRequest();
 
 Loader::includeModule('main');
+Loader::includeModule('crm');
 
 $module_id = htmlspecialcharsbx('' != $request['mid'] ? $request['mid'] : $request['id']);
 
@@ -36,6 +37,22 @@ $aTabsStatic = [
                     50,
                 ],
             ],
+            [
+                    'CRM_ENTITY_TYPE_ID',
+                Loc:: getMessage('CRM_ENTITY_TYPE_ID'),
+                CCrmOwnerType::Deal,
+
+                [
+                        'multiselectbox',
+                    [
+                        CCrmOwnerType::Deal => Loc:: getMessage('DEAL_TITLE'),
+                        CCrmOwnerType::Company => Loc:: getMessage('COMPANY_TITLE'),
+                        CCrmOwnerType::Contact => Loc:: getMessage('CONTACT_TITLE'),
+                        CCrmOwnerType::Lead => Loc:: getMessage('LEAD_TITLE'),
+
+                    ]
+                ]
+            ]
         ]
     ],
 ];

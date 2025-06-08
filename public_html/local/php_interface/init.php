@@ -22,46 +22,69 @@ $eventManager->addEventHandler("iblock", "OnAfterIBlockElementUpdate",'OnAfterIB
 $eventManager->addEventHandlerCompatible("crm", "OnAfterCrmDealAdd",'OnAfterCrmDealAddHandler');
 */
 $eventManager->addEventHandler("iblock", "OnAfterIBlockElementAdd", 'OnAfterIBlockElementAddHandler');
+$eventManager->addEventHandler("iblock", "OnAfterIBlockElementUpdate", 'OnAfterIBlockElementUpdateHandler');
+$eventManager->addEventHandlerCompatible("crm", "OnAfterCrmDealUpdate", 'OnAfterCrmDealUpdateHandler');
+
+function getIblockCodeHandler($arFieldsIblockID)
+{
+    $result = IblockTable::getList(array(
+        'filter' => ['ID' => $arFieldsIblockID],
+        'select' => ['CODE']
+    ));
+    if ($iblock = $result->fetch()) {
+        $iblockCode = $iblock['CODE'];
+    }
+    return $iblockCode;
+}
+
 
 function OnAfterIBlockElementAddHandler(&$arFields)
 {
+    // dump($arFields);
+    // die();
     if (Loader::includeModule('iblock') && Loader::includeModule('crm')) {
-        $result = IblockTable::getList(array(
-            'filter' => ['ID' => $arFields['IBLOCK_ID']],
-            'select' => ['CODE']
-        ));
-        if ($iblock = $result->fetch()) {
-            $iblockCode = $iblock['CODE'];
-        } else {
-            echo "Инфоблок с ID " . $arFields['ID'] . " не найден.";
+        $arFieldsIblockID = $arFields['IBLOCK_ID'];
+        $iblockCode = getIblockCodeHandler($arFieldsIblockID);
+        $iblockCodeOpt = 'request';
+        if ($iblockCode && $iblockCode == $iblockCodeOpt) {
+            $dealFactory = \Bitrix\Crm\Service\Container::getInstance()->getFactory(CCrmOwnerType::Deal);
+            $newDealItem = $dealFactory->createItem();
+            $newDealItem->set('TITLE', $arFields['NAME']);
+            $newDealItem->set('OPPORTUNITY', $arFields["PROPERTY_VALUES"][67]['n0']["VALUE"]);
+            $dealAddOperation = $dealFactory->getAddOperation($newDealItem);
+            $addResult = $dealAddOperation->launch();
+
         }
+
+
     } else {
         echo "Модуль инфоблоков не подключен.";
 
     }
-    $iblockCodeOpt = 'request';
+
     if ($iblockCode == $iblockCodeOpt) {
-       /* dump($arFields);
-        die();*/
-       /* $dealFactory = \Bitrix\Crm\Service\Container::getInstance()->getFactory(CCrmOwnerType::Deal);
 
-        $newDealItem = $dealFactory->createItem();
+        /*
 
-        $newDealItem->set('TITLE', 'Тестовая сделка D7');
-        $dealAddOperation = $dealFactory->getAddOperation($newDealItem);
-        $addResult = $dealAddOperation->launch();*/
 
-        /*  "PROPERTY_VALUES" => array:2 [▼
-      68 => array:1 [▼
-        "n0" => array:1 [▼
-          "VALUE" => "Иванов"
-        ]
-      ]
-      67 => array:1 [▼
-        "n0" => array:1 [▼
-          "VALUE" => "12000"
-        ]
-      ]
-    ] */
+        NAME=>ЭКГ
+                "PROPERTY_VALUES" => array:2 [▼
+            68 => array:1 [▼
+              "n0" => array:1 [▼
+                "VALUE" => "Иванов"
+              ]
+            ]
+            67 => array:1 [▼
+              "n0" => array:1 [▼
+                "VALUE" => "12000" OPPORTUNITY
+              ]
+            ]
+          ]*/
+
     }
+}
+
+function OnAfterIBlockElementUpdateHandler(&$arFields)
+{
+
 }

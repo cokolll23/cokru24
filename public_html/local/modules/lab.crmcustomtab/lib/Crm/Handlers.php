@@ -18,6 +18,7 @@ class Handlers
             'id' => 'book_tab_' . $entityTypeId . '_' . $entityId,
             'name' => Loc::getMessage('LAB_CRMCUSTOMTAB_TAB_TITLE'),
             'enabled' => true,
+           // 'html'=> '',
             'loader' => [
                 'serviceUrl' => sprintf(
                     '/bitrix/components/lab.crmcustomtab/book.grid/lazyload.ajax.php?site=%s&%s',
