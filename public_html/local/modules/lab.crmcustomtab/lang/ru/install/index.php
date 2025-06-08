@@ -5,4 +5,4 @@ $MESS['LAB_CRMCUSTOMTAB_INSTALL_MODULE_DESCRIPTION'] = 'Модуль добав�
 $MESS['LAB_CRMCUSTOMTAB_PARTNER_NAME'] = 'Алексей Соколов';
 $MESS['LAB_CRMCUSTOMTAB_PARTNER_URI'] = 'https://github.com/cokolll23';
 $MESS['LAB_CRMCUSTOMTAB_INSTALL_ERROR_VERSION'] = 'Для установки модуля требуется версия 20.0.0 или выше';
-$MESS['LAB_CRMCUSTOMTAB_INSTALL_MODULE_NAME'] = 'Таб в сделке';
+$MESS['LAB_CRMCUSTOMTAB_INSTALL_MODULE_NAME'] = 'Таб в сущностях CRM';
