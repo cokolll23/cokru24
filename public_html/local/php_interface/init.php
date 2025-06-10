@@ -3,6 +3,12 @@
 use Bitrix\Main\Loader;
 use Bitrix\Iblock\IblockTable;
 use Bitrix\Main\Diag\Debug;
+use Bitrix\Main\Page\Asset;
+
+CUtil::InitJSCore(array('cab_custom.common'));
+
+//\Bitrix\Main\UI\Extension::load('cab_custom.common','jquery');
+
 
 if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
     require_once __DIR__ . '/../../vendor/autoload.php';
@@ -21,9 +27,14 @@ $eventManager = \Bitrix\Main\EventManager::getInstance();
 $eventManager->addEventHandler("iblock", "OnAfterIBlockElementUpdate",'OnAfterIBlockElementUpdateHandler');
 $eventManager->addEventHandlerCompatible("crm", "OnAfterCrmDealAdd",'OnAfterCrmDealAddHandler');
 */
+
+// для создания кастомных свойств
+$eventManager->addEventHandler('iblock', 'OnIBlockPropertyBuildList', ['EventsClasses\ProceduresDateTimeBron', 'GetUserTypeDescription']);
+
 $eventManager->addEventHandler("iblock", "OnAfterIBlockElementAdd", 'OnAfterIBlockElementAddHandler');
 $eventManager->addEventHandler("iblock", "OnAfterIBlockElementUpdate", 'OnAfterIBlockElementUpdateHandler');
 $eventManager->addEventHandlerCompatible("crm", "OnAfterCrmDealUpdate", 'OnAfterCrmDealUpdateHandler');
+
 
 function getIblockCodeHandler($arFieldsIblockID)
 {
