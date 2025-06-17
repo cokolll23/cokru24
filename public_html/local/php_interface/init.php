@@ -5,7 +5,7 @@ use Bitrix\Iblock\IblockTable;
 use Bitrix\Main\Diag\Debug;
 use Bitrix\Main\Page\Asset;
 
-CUtil::InitJSCore(array('cab_custom.common'));
+
 
 //\Bitrix\Main\UI\Extension::load('cab_custom.common','jquery');
 
@@ -29,7 +29,8 @@ $eventManager->addEventHandlerCompatible("crm", "OnAfterCrmDealAdd",'OnAfterCrmD
 */
 
 // для создания кастомных свойств
-$eventManager->addEventHandler('iblock', 'OnIBlockPropertyBuildList', ['EventsClasses\ProceduresDateTimeBron', 'GetUserTypeDescription']);
+$eventManager->addEventHandler('iblock', 'OnIBlockPropertyBuildList', ['UserTypes\SignUpForProcedure', 'GetUserTypeDescription']);
+//$eventManager->addEventHandler('iblock', 'OnIBlockPropertyBuildList', ['EventsClasses\ProceduresDateTimeBron', 'GetUserTypeDescription']);
 
 $eventManager->addEventHandler("iblock", "OnAfterIBlockElementAdd", 'OnAfterIBlockElementAddHandler');
 $eventManager->addEventHandler("iblock", "OnAfterIBlockElementUpdate", 'OnAfterIBlockElementUpdateHandler');
