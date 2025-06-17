@@ -16,6 +16,7 @@ if ($blIsAjaxRequest && $_REQUEST['act']) {
         $iblockIdBron = 19;
         $pacientFIO =$_REQUEST['fio'];
         $strDateTime = $_REQUEST['date'];
+        $procName = $_REQUEST['procName'];
 
 
 
@@ -39,7 +40,9 @@ if ($blIsAjaxRequest && $_REQUEST['act']) {
             $arrRes = [
                 "success" => $PRODUCT_ID,
                 'fio'=>$pacientFIO,
-                'procedura'=>$procId
+                'date'=>$strDateTime,
+                'procedura'=>$procId,
+                'proceduraName'=>$procName
             ];
         }else{
             $arrRes = [
