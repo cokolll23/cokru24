@@ -1,18 +1,19 @@
 BX.ready(function () {
 //alert('Hi crazy');
 
-    $('body').on('click', '#lists_list_elements_17 a', function (e) {
+    $('body').on('click', 'table#lists_list_elements_17_table tr td:nth-child(4) a', function (e) {
         //id lists_list_elements_17
         e.preventDefault()
 
+        var procName = $(this).text();
         var clickAttr = $(e.target).attr('href');
-       // alert($(e.target).attr('href'));
+        // alert($(e.target).attr('href'));
         var url = '/local/ajax/registration_for_procedures_form.php';
         var data = {act: 'form', iblockDoctorsId: 17, atr: clickAttr};
         var node_target = 'ajaxPopup';// куда вставлять респонс
 
         var popup = BX.PopupWindowManager.create("ajaxPopup", BX('element'), {
-            content: 'Контент, отображаемый в теле окна',
+
             width: 400, // ширина окна
             height: 200, // высота окна
             zIndex: 100, // z-index
@@ -45,7 +46,7 @@ BX.ready(function () {
             buttons: [
                 new BX.PopupWindowButton({
                     text: 'Сохранить', // текст кнопки
-                    id: 'save-btn_' + clickAttr, // идентификатор
+                    id: 'save-btn', // идентификатор
                     className: 'ui-btn ui-btn-success', // доп. классы
                     events: {
                         click: function () {
@@ -54,10 +55,10 @@ BX.ready(function () {
                             let docId = $('form#popup #docId').val();
                             let fio = $('form#popup #fio').val();
                             let date = $('form#popup #date').val();
-                            data= {act:'add',docId:docId,fio:fio,date:date};
+                            data = {act: 'add', docId: docId, fio: fio, date: date,procName:procName};
 
                             sendAjax(url, 'post', data);
-                           // popup.destroy();
+                            // popup.destroy();
                         }
                     }
                 }),
@@ -75,8 +76,7 @@ BX.ready(function () {
             ],
             events: {
                 onPopupShow: function () {
-                    console.log(popup);
-                    sendAjax(url, 'post', data, node_target);
+
                 },
                 onPopupClose: function () {
                     // Событие при закрытии окна
@@ -96,11 +96,13 @@ function sendAjax(url, method = 'post', data = {}, node_target = '') {
         dataType: 'json',
         cache: false,
         success: function (data) {
-            if (data.success){
-                let strSuccess = ` Уважаемый ${data.fio} , вы записались на процедуру ${data.procedura} `;
+            if (data.success) {
+                let strSuccess = ` Уважаемый ${data.fio} , вы записались на ${data.date} на процедуру ${data.proceduraName} `;
+                $(' #popup-window-content-ajaxPopup ').html(strSuccess);
+               $('#ajaxPopup').find('#save-btn').css('display','none');
+                // alert(strSuccess);
             }
-            $('#' + node_target + ' #popup-window-content-ajaxPopup').html(strSuccess);
-
+            //$( ' #popup-window-content-ajaxPopup form#popup').html(strSuccess);
         }
     })
 
