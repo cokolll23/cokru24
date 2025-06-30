@@ -32,8 +32,8 @@ $eventManager->addEventHandlerCompatible("crm", "OnAfterCrmDealAdd",'OnAfterCrmD
 $eventManager->addEventHandler('iblock', 'OnIBlockPropertyBuildList', ['UserTypes\SignUpForProcedure', 'GetUserTypeDescription']);
 $eventManager->addEventHandler('iblock', 'OnIBlockPropertyBuildList', ['UserTypes\SelectDeal', 'GetUserTypeDescription']);
 
-$eventManager->addEventHandler("iblock", "OnAfterIBlockElementUpdate", 'OnAfterIBlockElementUpdateHandler');
-$eventManager->addEventHandlerCompatible("crm", "OnAfterCrmDealUpdate", 'OnAfterCrmDealUpdateHandler');
+$eventManager->addEventHandler("iblock", "OnAfterIBlockElementUpdate",['\EventsHandlers\OnAfterIBlockElementUpdateHandler', 'OnAfterIBlockElementUpdateHandler']);
+$eventManager->addEventHandlerCompatible("crm", "OnBeforeCrmDealUpdate", ['\EventsHandlers\OnBeforeCrmDealUpdateHandler','OnBeforeCrmDealUpdateHandler']);
 
 
 function getIblockCodeHandler($arFieldsIblockID)
@@ -47,72 +47,79 @@ function getIblockCodeHandler($arFieldsIblockID)
     }
     return $iblockCode;
 }
-
-function OnAfterIBlockElementUpdateHandler(&$arFields)
+/*function OnAfterIBlockElementUpdateHandler(&$arFields)
 {
-
-    if (Loader::includeModule('iblock') && Loader::includeModule('crm')) {
+    if ( Loader::includeModule('crm')) {
         $arFieldsIblockID = $arFields['IBLOCK_ID'];
         $iblockCode = getIblockCodeHandler($arFieldsIblockID);
         $iblockCodeOpt = 'request';
+
         if ($iblockCode && $iblockCode == $iblockCodeOpt) {
-            Debug::dumpToFile($arFields, 'OnAfterIBlockElementUpdateHandler', 'arFields.log');
+
+            $dealId = (int)$arFields["PROPERTY_VALUES"][75]["70:75"]["VALUE"];
+
+            $strDealSumma =$arFields["PROPERTY_VALUES"][67]["70:67"]["VALUE"];
+
+
             $dealFactory = Container::getInstance()->getFactory(CCrmOwnerType::Deal);
-            $newDealItem = $dealFactory->getItem((int)$arFields["PROPERTY_VALUES"][75]["70:75"]["VALUE"]);
-            $newDealItem->set('OPPORTUNITY', $arFields["PROPERTY_VALUES"][67]["70:67"]["VALUE"]);
+            $newDealItem = $dealFactory->getItem($dealId);
+
+            Debug::dumpToFile($arFields, '$arFields ' . date('d-m-Y; H:i:s'));
+            //Debug::dumpToFile($strDealSumma, '$strDealSumma ' . date('d-m-Y; H:i:s'));
+
+
+            if (is_array($arFields["PROPERTY_VALUES"][67]["70:67"])) {
+                $newDealItem->set('OPPORTUNITY', (int)$arFields["PROPERTY_VALUES"][67]["70:67"]["VALUE"]);
+            }
             $newDealItem->set("ASSIGNED_BY_ID", $arFields["PROPERTY_VALUES"][68]["70:68"]["VALUE"]);
             $dealUpdateOperation = $dealFactory->getUpdateOperation($newDealItem);
             $addResult = $dealUpdateOperation->launch();
-
         }
     }
-}
+}*/
 
-function OnAfterCrmDealUpdateHandler(&$arFields)
+/*function OnBeforeCrmDealUpdateHandler(&$arFields)
 {
-    Loader::includeModule('iblock');
-
-
-
+    // get измененные значения
     $dealId = $arFields['ID'];
-    $dealOpportunityAccount = $arFields["OPPORTUNITY_ACCOUNT"];
-    $dealAssignedByID = $arFields["ASSIGNED_BY_ID"];
+
+    if ($arFields["OPPORTUNITY"] && $arFields["OPPORTUNITY"] != '') {
+        $strDealSumma = $arFields["OPPORTUNITY"];
+    } else {
+        $factory = Container::getInstance()->getFactory(\CCrmOwnerType::Deal);
+        $getCurrDealRes['dealId'] = $item = $factory->getItem((int)$dealId);
+
+        $strDealSumma = $item->get("OPPORTUNITY");
+
+
+    }
+    if ($arFields["ASSIGNED_BY_ID"] && $arFields["ASSIGNED_BY_ID"] != '') {
+        $strDealOtvetctvenniy = $arFields["ASSIGNED_BY_ID"];
+    }
 
     $arFilter = array(
         "IBLOCK_ID" => 18,
         "PROPERTY_DEAL" => $dealId
     );
+// получить id элемента заказа по свойству Сделка 75 DEAL
+
     $res = \CIBlockElement::GetList(
         array("SORT" => "ASC"),
         $arFilter,
         false, false, ['IBLOCK_ID', 'ID']
     );
+
     while ($ob = $res->GetNextElement()) {
         $arElFields = $ob->GetFields();
     }
 
     $iElId = (int)$arElFields['ID'];
-    Debug::dumpToFile($iElId, 'OnAfterIBlockElementUpdateHandler');
-    if ($iElId) {
-        $el = new \CIBlockElement;
-        $PROP = array();
-        $PROP[70] = $dealId; // Сделка в иб
-        $PROP[67] = $dealOpportunityAccount;// Сумма
-        $PROP[68] = $dealAssignedByID;// Ответственный
-
-        $arLoadProductArray = array(
-            //"MODIFIED_BY" => $USER->GetID(), // элемент изменен текущим пользователем
-            "IBLOCK_SECTION" => false,          // элемент лежит в корне раздела
-            "PROPERTY_VALUES" => $PROP,
-            "NAME" => "Элемент",
-            "ACTIVE" => "Y",            // активен
-
-        );
-        $res = $el->Update($iElId, $arLoadProductArray);
-
-    } else {
-        echo "Элемент не найден.";
-    }
 
 
-}
+
+    $sqlQuery = " UPDATE b_iblock_element_prop_s18 SET PROPERTY_75 = '" . $dealId . "', PROPERTY_67 =  '" . $strDealSumma . "', PROPERTY_68 = '" . $strDealOtvetctvenniy . "' WHERE IBLOCK_ELEMENT_ID = '" . $iElId . "'";
+
+    $connection = \Bitrix\Main\Application::getConnection();
+    $connection->queryExecute($sqlQuery);
+
+}*/

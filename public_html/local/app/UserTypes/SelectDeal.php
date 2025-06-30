@@ -69,7 +69,6 @@ class SelectDeal
 
         ];
     }
-
     public static function GetPropertyFieldHtml($arProperty, $value, $strHTMLControlName)
     {
         $deals = static::getOptionsCrmDealsHtml();
