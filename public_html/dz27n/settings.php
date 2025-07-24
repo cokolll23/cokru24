@@ -1,8 +1,8 @@
-<?php
-define('C_REST_CLIENT_ID','local.687fc55314e8b1.39459585');//Application ID
-define('C_REST_CLIENT_SECRET','QpggTCggZ9ftA9B0l5NtSjUUjSwQ9dz22rKpTQuU0RRq1UbPFY');//Application key
+<?
+define('C_REST_CLIENT_ID','local.6880143f795691.53917440');//Application ID
+define('C_REST_CLIENT_SECRET','41Y5RYTsi7AIX2JtFgq5EAU9K80Zv0VrgQX2TuPNBP2Ml9wdsL');//Application key
 // or
-//define('C_REST_WEB_HOOK_URL','https://rest-api.bitrix24.com/rest/1/doutwqkjxgc3mgc1/');//url on creat Webhook
+// define('C_REST_WEB_HOOK_URL','https://rest-course.bitrix24.ru/rest/1/j0nzq02mzvzmx9lx/');//url on creat Webhook
 
 //define('C_REST_CURRENT_ENCODING','windows-1251');
 //define('C_REST_IGNORE_SSL',true);//turn off validate ssl by curl

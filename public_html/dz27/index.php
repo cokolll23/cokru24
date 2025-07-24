@@ -1,35 +1,11 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/header.php';
+//require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 require_once (__DIR__.'/crest.php');
-//Bitrix\Main\Diag\Debug::dumpToFile($_REQUEST, '$arFields ' . date('d-m-Y; H:i:s'));
-
-if (empty($_REQUEST['event'])){?>
-
-    <div>Приложение используется как Обработчик события</div>
-
-<?php
-
-}
-if ($_REQUEST['event'] === 'onCrmActivityAdd'){
-
-    $activityId = $_REQUEST['data']['fields']['id'];
-    //todo get activity info
-
-    $result = CRest::call(
-        'crm.activity.get',
-        [
-                'id' => $activityId
-        ]
-    );
-    echo '<pre>';
-    print_r($result);
-    echo '</pre>';
+echo 4444;
+if(in_array($_REQUEST['event'], ['0' => 'ONCRMCONTACTUPDATE', '1' => 'ONCRMCONTACTADD']))
+{
+   // Bitrix\Main\Diag\Debug::dumpToFile($_REQUEST, '$arFields ' . date('d-m-Y; H:i:s'));
 
 }
 
-$result = CRest::call('profile');
 
-echo '<pre>';
-	print_r($result);
-echo '</pre>';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/footer.php';
