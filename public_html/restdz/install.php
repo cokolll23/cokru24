@@ -10,6 +10,15 @@ $res = CRest::call(
         'HANDLER' => 'https://cokru.ru/restdz/index.php',
     ]
 );
+
+$res = CRest::call(
+    'event.bind',
+    [
+        'EVENT' => 'ONCRMACTIVITYADD',
+        'HANDLER' => 'https://cokru.ru/restdz/index.php',
+    ]
+);
+
 if($result['rest_only'] === false):?>
 	<head>
 		<script src="//api.bitrix24.com/api/v1/"></script>
