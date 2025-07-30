@@ -21,6 +21,7 @@ if($_REQUEST['event'] === 'ONCRMACTIVITYADD')
     $intDateLast=$result['result']['CREATED'];
 
     $resUpdate = CRest::call(
+
         'crm.contact.update',
         [
             'id' => $intContactID,
