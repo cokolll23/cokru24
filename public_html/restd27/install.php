@@ -2,22 +2,13 @@
 require_once (__DIR__.'/crest.php');
 
 $result = CRest::installApp();
-
-$handlerBackUrl = ($_SERVER['HTTPS'] === 'on' || $_SERVER['SERVER_PORT'] === '443' ? 'https' : 'http') . '://'
-    . $_SERVER['SERVER_NAME']
-    . (in_array($_SERVER['SERVER_PORT'],	['80', '443'], true) ? '' : ':' . $_SERVER['SERVER_PORT'])
-    . str_replace($_SERVER['DOCUMENT_ROOT'], '',__DIR__)
-    . '/index.php';
-
-$result = CRest::call(
+$res = CRest::call(
     'event.bind',
     [
-        'EVENT' => 'ONCRMCONTACTUPDATE',
-        'HANDLER' => 'https://cokru.ru/dz27/index.php',
+        'EVENT' => 'ONCRMACTIVITYADD',
+        'HANDLER' => 'https://cokru.ru/restd27/index.php',
     ]
 );
-
-CRest::setLog(['update' => $result], 'installation');
 
 if($result['rest_only'] === false):?>
 	<head>

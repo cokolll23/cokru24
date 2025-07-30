@@ -1,0 +1,68 @@
+
+
+2025-07-28 11:40:17curl Array
+(
+    [result] => Array
+        (
+            [ID] => 29
+            [OWNER_ID] => 10
+            [OWNER_TYPE_ID] => 3
+            [TYPE_ID] => 6
+            [PROVIDER_ID] => CRM_TODO
+            [PROVIDER_TYPE_ID] => TODO
+            [PROVIDER_GROUP_ID] => 
+            [ASSOCIATED_ENTITY_ID] => 0
+            [SUBJECT] => Связаться с клиентом curl
+            [CREATED] => 2025-07-28T11:40:15+03:00
+            [LAST_UPDATED] => 2025-07-28T11:40:15+03:00
+            [START_TIME] => 2025-07-31T12:00:00+03:00
+            [END_TIME] => 2025-07-31T12:00:00+03:00
+            [DEADLINE] => 2025-07-31T12:00:00+03:00
+            [COMPLETED] => N
+            [STATUS] => 1
+            [RESPONSIBLE_ID] => 1
+            [PRIORITY] => 1
+            [NOTIFY_TYPE] => 0
+            [NOTIFY_VALUE] => 0
+            [DESCRIPTION] => [p]
+curl
+[/p]
+            [DESCRIPTION_TYPE] => 2
+            [DIRECTION] => 0
+            [LOCATION] => 
+            [SETTINGS] => Array
+                (
+                    [COLOR] => default
+                )
+
+            [ORIGINATOR_ID] => 
+            [ORIGIN_ID] => 
+            [AUTHOR_ID] => 1
+            [EDITOR_ID] => 1
+            [PROVIDER_PARAMS] => Array
+                (
+                )
+
+            [PROVIDER_DATA] => 
+            [RESULT_MARK] => 0
+            [RESULT_VALUE] => 
+            [RESULT_SUM] => 
+            [RESULT_CURRENCY_ID] => 
+            [RESULT_STATUS] => 0
+            [RESULT_STREAM] => 0
+            [RESULT_SOURCE_ID] => 
+            [AUTOCOMPLETE_RULE] => 0
+        )
+
+    [time] => Array
+        (
+            [start] => 1753692017.0887
+            [finish] => 1753692017.4186
+            [duration] => 0.32988405227661
+            [processing] => 0.088963031768799
+            [date_start] => 2025-07-28T11:40:17+03:00
+            [date_finish] => 2025-07-28T11:40:17+03:00
+        )
+
+)
+

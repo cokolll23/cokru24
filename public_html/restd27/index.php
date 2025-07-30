@@ -1,14 +1,11 @@
 <?php
 require_once (__DIR__.'/crest.php');
 
-
-
-
 if($_REQUEST['event'] === 'ONCRMACTIVITYADD')
 {
-   $intActivityId = $_REQUEST['data']['FIELDS']['ID'];
 
-    $url = 'https://cokru.ru/rest/1/wv4u0mgff7mlj65r/crm.activity.get.json?ID=' . $intActivityId;
+    $intActivityId = $_REQUEST['data']['FIELDS']['ID'];
+    $url = 'https://cokru.ru/rest/1/tkrjgnjygf10nfzp/crm.activity.get.json?ID=' . $intActivityId;
 
     $curl = curl_init();
     curl_setopt_array($curl, array(
@@ -31,14 +28,11 @@ if($_REQUEST['event'] === 'ONCRMACTIVITYADD')
                 'UF_CRM_CONTACT_LAST_COMMUNICATION' =>$intDateLast//date('Y-m-d H:i:s'), //'2023-12-31T23:59:59+03:00'//$intDateLast
             ]
         ]
-    );?>
+    );
 
-
-
-<?php
-    $log = date('Y-m-d H:i:s') . '$_REQUEST ' . print_r($_REQUEST, true);
-    //$log = date('Y-m-d H:i:s') . '--OWNER_ID-- ' . $result['result']['OWNER_ID'] ;
+//$log = date('Y-m-d H:i:s') . '--OWNER_ID-- ' . $result['result']['OWNER_ID'] ;
+    $log = date('Y-m-d H:i:s') . '; $resUpdate ; ' . print_r($resUpdate, true);
     file_put_contents(__DIR__ . '/log.txt', $log . PHP_EOL, FILE_APPEND);
+
+
 }
-
-

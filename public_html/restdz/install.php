@@ -14,7 +14,7 @@ $res = CRest::call(
 $res = CRest::call(
     'event.bind',
     [
-        'EVENT' => 'ONCRMACTIVITYADD',
+        'EVENT' => 'ONCRMACTIVITYUPDATE',
         'HANDLER' => 'https://cokru.ru/restdz/index.php',
     ]
 );
