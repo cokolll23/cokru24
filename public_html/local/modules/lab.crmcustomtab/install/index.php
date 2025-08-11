@@ -13,6 +13,7 @@ use Bitrix\Main\DB\SqlQueryException;
 use Bitrix\Main\LoaderException;
 use Lab\Crmcustomtab\Orm\BookTable;
 use Lab\Crmcustomtab\Orm\AuthorTable;
+use Lab\Crmcustomtab\Orm\GarageTable;
 use Lab\Crmcustomtab\Data\TestDataInstaller;
 
 Loc::getMessage(__FILE__);
@@ -55,23 +56,6 @@ class lab_crmcustomtab extends CModule
         }
     }
 
-    /**
-     * @throws SqlQueryException
-     * @throws LoaderException
-     * @throws InvalidPathException
-     */
-    public function DoUninstall(): void
-    {
-        $this->UnInstallFiles();
-        $this->UnInstallDB();
-        $this->UnInstallEvents();
-
-        \Bitrix\Main\ModuleManager::unRegisterModule($this->MODULE_ID);
-    }
-
-    /**
-     * @throws InvalidPathException
-     */
     public function InstallFiles($params = []): void
     {
         $component_path = $this->getPath() . '/install/components';
@@ -101,6 +85,25 @@ class lab_crmcustomtab extends CModule
         }
     }
 
+    private function installGarageTable(): void
+    {
+        $connection = Application::getConnection();
+        $tableName = 'garage';
+
+        if (!$connection->isTableExists($tableName)) {
+            $connection->queryExecute("
+           create table garage (
+            id int unsigned not null auto_increment primary key,
+             MARKA varchar(255) not null,
+             MODEL varchar(255) not null,
+            YEAR VARCHAR(255) not null,
+            COLOR varchar(255) not null,
+             MILEAGE varchar(255) not null
+)
+        ");
+        }
+    }
+
     public function InstallEvents(): void
     {
         $eventManager = EventManager::getInstance();
@@ -112,8 +115,61 @@ class lab_crmcustomtab extends CModule
             '\\Lab\\Crmcustomtab\\Crm\\Handlers',
             'updateTabs'
         );
+        $eventManager->registerEventHandler(
+            'crm',
+            'OnAfterCrmDealAdd',
+            $this->MODULE_ID,
+            '\\Lab\\Crmcustomtab\\Crm\\OnAfterCrmDealAddHandler',
+            'OnAfterCrmDealAddHandler'
+        );
     }
 
+    private function addEntityElements(string $entityClass): void
+    {
+        if ($entityClass === AuthorTable::class) {
+            TestDataInstaller::addAuthors();
+        } elseif ($entityClass === BookTable::class) {
+            TestDataInstaller::addBooks();
+        }
+    }
+
+    private function installManyToManyTable(): void
+    {
+        $connection = Application::getConnection();
+        $tableName = 'lab_book_author';
+
+        if (!$connection->isTableExists($tableName)) {
+            $connection->queryExecute("
+            CREATE TABLE {$tableName} (
+                BOOK_ID int NOT NULL,
+                AUTHOR_ID int NOT NULL,
+                PRIMARY KEY (BOOK_ID, AUTHOR_ID),
+                CONSTRAINT fk_{$tableName}_book FOREIGN KEY (BOOK_ID) REFERENCES lab_book(ID) ON DELETE CASCADE,
+                CONSTRAINT fk_{$tableName}_author FOREIGN KEY (AUTHOR_ID) REFERENCES lab_author(ID) ON DELETE CASCADE
+            )
+        ");
+        }
+    }
+
+
+
+    /**
+     * @throws SqlQueryException
+     * @throws LoaderException
+     * @throws InvalidPathException
+     */
+    public function DoUninstall(): void
+    {
+        $this->UnInstallFiles();
+        $this->UnInstallDB();
+        $this->UnInstallEvents();
+
+        \Bitrix\Main\ModuleManager::unRegisterModule($this->MODULE_ID);
+    }
+
+    /**
+     * @throws InvalidPathException
+     */
     public function UnInstallEvents(): void
     {
         $eventManager = EventManager::getInstance();
@@ -145,6 +201,7 @@ class lab_crmcustomtab extends CModule
                 $connection->dropTable($entity::getTableName());
             }
         }
+
     }
 
     /**
@@ -170,33 +227,6 @@ class lab_crmcustomtab extends CModule
         }
     }
 
-    private function addEntityElements(string $entityClass): void
-    {
-        if ($entityClass === AuthorTable::class) {
-            TestDataInstaller::addAuthors();
-        } elseif ($entityClass === BookTable::class) {
-            TestDataInstaller::addBooks();
-        }
-    }
-
-    private function installManyToManyTable(): void
-    {
-        $connection = Application::getConnection();
-        $tableName = 'lab_book_author';
-
-        if (!$connection->isTableExists($tableName)) {
-            $connection->queryExecute("
-            CREATE TABLE {$tableName} (
-                BOOK_ID int NOT NULL,
-                AUTHOR_ID int NOT NULL,
-                PRIMARY KEY (BOOK_ID, AUTHOR_ID),
-                CONSTRAINT fk_{$tableName}_book FOREIGN KEY (BOOK_ID) REFERENCES lab_book(ID) ON DELETE CASCADE,
-                CONSTRAINT fk_{$tableName}_author FOREIGN KEY (AUTHOR_ID) REFERENCES lab_author(ID) ON DELETE CASCADE
-            )
-        ");
-        }
-    }
-
     /**
      * @throws SqlQueryException
      */
@@ -210,11 +240,17 @@ class lab_crmcustomtab extends CModule
         }
     }
 
+
+    /**
+     * @return
+     *  classes моделей в папке lib для установки таблиц в БД
+     */
     private function getEntities(): array
     {
         return [
             AuthorTable::class,
             BookTable::class,
+            GarageTable::class,
         ];
     }
 

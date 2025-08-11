@@ -5,13 +5,14 @@ use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\UI\PageNavigation;
 use Bitrix\Main\Grid\Options as GridOptions;
 use Bitrix\Main\UI\Filter\Options as FilterOptions;
-use Lab\Crmcustomtab\Orm\BookTable;
 use Lab\Crmcustomtab\Orm\GarageTable;
 use Bitrix\Main\Loader;
 use Bitrix\Main\ORM\Query\Result;
 
-Loader::includeModule('lab.crmcustomtab');
-class BookGrid extends \CBitrixComponent implements Controllerable
+Loader::includeModule('lab.garage');
+
+Loc::loadMessages(__FILE__);
+class GarageGrid extends \CBitrixComponent implements Controllerable
 {
     public function configureActions(): array
     {
@@ -34,34 +35,33 @@ class BookGrid extends \CBitrixComponent implements Controllerable
             ],
             [
                 'id' => 'MARKA',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_TITLE_LABEL'),
+                'name' => Loc::getMessage('GARAGE_GRID_GARAGEAUTO_MARKA_LABEL'),
                 'sort' => 'MARKA',
                 'default' => true,
             ],
             [
                 'id' => 'MODEL',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_MODEL_LABEL'),
+                'name' => Loc::getMessage('GARAGE_GRID_GARAGEAUTO_MODEL_LABEL'),
                 'sort' => 'MODEL',
                 'default' => true,
             ],
             [
                 'id' => 'YEAR',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_PUBLISHING_YEAR_LABEL'),
+                'name' => Loc::getMessage('GARAGE_GRID_GARAGEAUTO_YEAR_LABEL'),
                 'sort' => 'YEAR',
                 'default' => true,
             ],
             [
                 'id' => 'COLOR',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_COLOR_LABEL'),
-                'sort' => 'COLOR',
+                'name' => Loc::getMessage('GARAGE_GRID_GARAGEAUTO_COLOR_LABEL'),
                 'default' => true,
             ],
             [
-                'id' => 'MILEAGE',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_MILEAGE_LABEL'),
+                'id' => 'MILEGE',
+                'name' => Loc::getMessage('GARAGE_GRID_GARAGEAUTO_MILEGE_LABEL'),
+                'sort' => 'PUBLISH_DATE',
                 'default' => true,
             ],
-
         ];
     }
 
@@ -74,7 +74,7 @@ class BookGrid extends \CBitrixComponent implements Controllerable
     private function prepareGridData(): void
     {
         $this->arResult['HEADERS'] = $this->getHeaders();
-        $this->arResult['FILTER_ID'] = 'BOOK_GRID';
+        $this->arResult['FILTER_ID'] = 'GARAGE_GRID';
 
         $gridOptions = new GridOptions($this->arResult['FILTER_ID']);
         $navParams = $gridOptions->getNavParams();
@@ -99,7 +99,7 @@ class BookGrid extends \CBitrixComponent implements Controllerable
             ],
         ]);
 
-        $bookIdsQuery = GarageTable::query()
+        $autoIdsQuery = GarageTable::query()
             ->setSelect(['ID'])
             ->setFilter($filter)
             ->setLimit($nav->getLimit())
@@ -113,18 +113,23 @@ class BookGrid extends \CBitrixComponent implements Controllerable
         ;
         $nav->setRecordCount($countQuery->queryCountTotal());
 
-        $bookIds = array_column($bookIdsQuery->exec()->fetchAll(), 'ID');
+        $autoIds = array_column($autoIdsQuery->exec()->fetchAll(), 'ID');
 
-        if (!empty($bookIds)) {
-            $books = GarageTable::getList([
-                'filter' => ['ID' => $bookIds,'CONTACT_ID'=> $this ->arParams['DEAL_ID']] + $filter,
+        if (!empty($autoIds)) {
+            $autos = GarageTable::getList([
+                'filter' => ['ID' => $autoIds] + $filter,
                 'select' => [
-                    '*',
+                    'ID',
+                    'MARKA',
+                    'MODEL',
+                    'YEAR',
+                    'COLOR',
+                    'MILEGE',
                 ],
                 'order' => $sort['sort'],
             ]);
 
-            $this->arResult['GRID_LIST'] = $this->prepareGridList($books);
+            $this->arResult['GRID_LIST'] = $this->prepareGridList($autos);
         } else {
             $this->arResult['GRID_LIST'] = [];
         }
@@ -138,11 +143,11 @@ class BookGrid extends \CBitrixComponent implements Controllerable
         $filter = [];
 
         if (!empty($filterData['FIND'])) {
-            $filter['%TITLE'] = $filterData['FIND'];
+            $filter['%MARKA'] = $filterData['FIND'];
         }
 
-        if (!empty($filterData['TITLE'])) {
-            $filter['%TITLE'] = $filterData['TITLE'];
+        if (!empty($filterData['MARKA'])) {
+            $filter['%MARKA'] = $filterData['MARKA'];
         }
 
         if (!empty($filterData['YEAR_from'])) {
@@ -164,42 +169,43 @@ class BookGrid extends \CBitrixComponent implements Controllerable
         return $filter;
     }
 
-    private function prepareGridList(Result $books): array
+    private function prepareGridList(Result $autos): array
     {
         $gridList = [];
-        $groupedBooks = [];
+        $groupedGarages = [];
 
-        while ($book = $books->fetch()) {
-            $bookId = $book['ID'];
+        while ($auto = $autos->fetch()) {
+            $autoId = $auto['ID'];
 
-            if (!isset($groupedBooks[$bookId])) {
-
-                $groupedBooks[$bookId] = [
-                    'ID' => $book['ID'],
-                    'MARKA' => $book['MARKA'],
-                    'MODEL' => $book['MODEL'],
-                    'YEAR' => $book['YEAR'],
-                    'COLOR' => $book['COLOR'],
-                    'MILEAGE' => $book['MILEAGE'],
-                    //'AUTHORS' => []
+            if (!isset($groupedGarages[$autoId])) {
+                $groupedGarages[$autoId] = [
+                    'ID' => $auto['ID'],
+                    'MARKA' => $auto['MARKA'],
+                    'MODEL' => $auto['MODEL'],
+                    'YEAR' => $auto['YEAR'],
+                    'COLOR' => $auto['COLOR'],
+                    'MILEGE' => $auto['MILEGE'],
                 ];
             }
 
-
+            /*if ($auto['AUTHOR_ID']) {
+                $groupedGarages[$autoId]['AUTHORS'][] = implode(' ', array_filter([
+                    $auto['AUTHOR_LAST_NAME'],
+                    $auto['AUTHOR_FIRST_NAME'],
+                    $auto['AUTHOR_SECOND_NAME']
+                ]));
+            }*/
         }
 
-        foreach ($groupedBooks as $book) {
-
+        foreach ($groupedGarages as $auto) {
             $gridList[] = [
                 'data' => [
-                    'ID' => $book['ID'],
-                    'MARKA' => $book['MARKA'],
-                    'MODEL' => $book['MODEL'],
-                    'YEAR' => $book['YEAR'],
-                    'COLOR' => $book['COLOR'],
-                    'MILEAGE' => $book['MILEAGE'],
-                    /* 'AUTHORS' => implode(', ', $book['AUTHORS']),
-                     'PUBLISH_DATE' => $book['PUBLISH_DATE']->format('d.m.Y'),*/
+                    'ID' => $auto['ID'],
+                    'MARKA' => $auto['MARKA'],
+                    'MODEL' => $auto['MODEL'],
+                    'YEAR' => $auto['YEAR'],
+                    'COLOR' => $auto['COLOR'],
+                    'MILEGE' => $auto['MILEGE'],
                 ],
                 'actions' => $this->getElementActions(),
             ];
@@ -212,26 +218,20 @@ class BookGrid extends \CBitrixComponent implements Controllerable
     {
         return [
             [
-                'id' => 'TITLE',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_TITLE_LABEL'),
+                'id' => 'MARKA',
+                'name' => Loc::getMessage('GARAGE_GRID_GARAGEAUTO_MARKA_LABEL'),
                 'type' => 'string',
                 'default' => true,
             ],
             [
                 'id' => 'MODEL',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_MODEL_LABEL'),
-                'type' => 'string',
-                'default' => true,
-            ],
-            [
-                'id' => 'YEAR',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_PUBLISHING_YEAR_LABEL'),
-                'type' => 'string',
+                'name' => Loc::getMessage('GARAGE_GRID_GARAGEAUTO_MODEL_LABEL'),
+                'type' => 'number',
                 'default' => true,
             ],
             [
                 'id' => 'PUBLISH_DATE',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_PUBLISHING_DATE_LABEL'),
+                'name' => Loc::getMessage('GARAGE_GRID_GARAGEAUTO_MILEGE_LABEL'),
                 'type' => 'date',
                 'default' => true,
             ],

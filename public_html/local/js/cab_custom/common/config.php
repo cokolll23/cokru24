@@ -6,7 +6,10 @@ return [
     'js' => [
         'src/custom.js',
     ],
-    'rel' => [
+    'css' => [
+        'src/style.css',
+    ],
+   /* 'rel' => [
         'jquery3'
-    ]
+    ]*/
 ];

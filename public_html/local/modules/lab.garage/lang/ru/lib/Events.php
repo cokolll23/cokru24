@@ -1,0 +1,2 @@
+<?php
+$MESS['LAB_CRMCUSTOMTABGARAGE_TAB_TITLE'] = 'ГАРАЖ';

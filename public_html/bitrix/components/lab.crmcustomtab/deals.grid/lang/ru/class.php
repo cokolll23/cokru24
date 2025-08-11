@@ -1,6 +1,6 @@
 <?php
-$MESS['BOOK_GRID_BOOK_TITLE_LABEL'] = 'Марка автомобиля';
-$MESS['BOOK_GRID_BOOK_MODEL_LABEL'] = 'Модель автомобиля';
+$MESS['DEALS_GRID_TITLE_LABEL'] = 'Сделка';
+$MESS['DEALS_GRID_YEAR_LABEL'] = 'Дата обращения';
 $MESS['BOOK_GRID_BOOK_PUBLISHING_YEAR_LABEL'] = 'Год выпуска';
 $MESS['BOOK_GRID_BOOK_COLOR_LABEL'] = 'Цвет кузова';
 $MESS['BOOK_GRID_BOOK_MILEAGE_LABEL'] = 'Пробег';

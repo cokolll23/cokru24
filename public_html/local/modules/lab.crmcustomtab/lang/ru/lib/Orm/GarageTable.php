@@ -1,0 +1,7 @@
+<?php
+$MESS['LISTS_ENTITY_ID_FIELD'] = "ID";
+$MESS['LISTS_ENTITY_MARKA_FIELD'] = "Марка авто";
+$MESS['LISTS_ENTITY_MODEL_FIELD'] = "Модель авто";
+$MESS['LISTS_ENTITY_YEAR_CREATED_FIELD'] = "Год выпуска";
+$MESS['LISTS_ENTITY_COLOR_FIELD'] = "Цвет кузова";
+$MESS['LISTS_ENTITY_MILEGE_FIELD'] = "Пробег";

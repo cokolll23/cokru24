@@ -11,7 +11,7 @@ use Bitrix\Main\SystemException;
 use Bitrix\Main\IO\InvalidPathException;
 use Bitrix\Main\DB\SqlQueryException;
 use Bitrix\Main\LoaderException;
-use Lab\Crmcustomtab\Orm\BookTable;
+use Lab\Crmcustomtabgarage\Orm\GarageTable;
 use Lab\Crmcustomtab\Orm\AuthorTable;
 use Lab\Crmcustomtab\Data\TestDataInstaller;
 
@@ -49,7 +49,6 @@ class lab_crmcustomtabgarage extends CModule
             $this->InstallFiles();
             $this->InstallDB();
             $this->InstallEvents();
-
         } else {
             throw new SystemException(Loc::getMessage('LAB_CRMCUSTOMTAB_INSTALL_ERROR_VERSION'));
         }
@@ -94,8 +93,6 @@ class lab_crmcustomtabgarage extends CModule
                 Base::getInstance($entity)->createDbTable();
             }
         }
-
-        $this->installGarageTable();
     }
 
     public function InstallEvents(): void
@@ -106,7 +103,7 @@ class lab_crmcustomtabgarage extends CModule
             'crm',
             'onEntityDetailsTabsInitialized',
             $this->MODULE_ID,
-            '\\Lab\\Crmcustomtabgarage\\Crm\\Handlers',
+            '\Lab\Crmcustomtabgarage\Crm\Handlers',
             'updateTabs'
         );
     }
@@ -143,7 +140,7 @@ class lab_crmcustomtabgarage extends CModule
             }
         }
 
-       $this-> unInstallGarageTable();
+        $this->unInstallGarageTable();
     }
 
     /**
@@ -168,7 +165,6 @@ class lab_crmcustomtabgarage extends CModule
             throw new InvalidPathException($component_path);
         }
     }
-
 
 
     private function installGarageTable(): void

@@ -5,13 +5,13 @@ use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\UI\PageNavigation;
 use Bitrix\Main\Grid\Options as GridOptions;
 use Bitrix\Main\UI\Filter\Options as FilterOptions;
-use Lab\Crmcustomtab\Orm\BookTable;
 use Lab\Crmcustomtab\Orm\GarageTable;
 use Bitrix\Main\Loader;
 use Bitrix\Main\ORM\Query\Result;
+use Bitrix\Crm\DealTable;
 
 Loader::includeModule('lab.crmcustomtab');
-class BookGrid extends \CBitrixComponent implements Controllerable
+class DealsGrid extends \CBitrixComponent implements Controllerable
 {
     public function configureActions(): array
     {
@@ -33,35 +33,18 @@ class BookGrid extends \CBitrixComponent implements Controllerable
                 'default' => true,
             ],
             [
-                'id' => 'MARKA',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_TITLE_LABEL'),
-                'sort' => 'MARKA',
-                'default' => true,
-            ],
-            [
-                'id' => 'MODEL',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_MODEL_LABEL'),
-                'sort' => 'MODEL',
-                'default' => true,
-            ],
-            [
-                'id' => 'YEAR',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_PUBLISHING_YEAR_LABEL'),
-                'sort' => 'YEAR',
-                'default' => true,
-            ],
-            [
-                'id' => 'COLOR',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_COLOR_LABEL'),
-                'sort' => 'COLOR',
-                'default' => true,
-            ],
-            [
-                'id' => 'MILEAGE',
-                'name' => Loc::getMessage('BOOK_GRID_BOOK_MILEAGE_LABEL'),
+                'id' => 'TITLE',
+                'name' => Loc::getMessage('DEALS_GRID_TITLE_LABEL'),
+                'sort' => 'TITLE',
                 'default' => true,
             ],
 
+            [
+                'id' => 'YEAR',
+                'name' => Loc::getMessage('DEALS_GRID_YEAR_LABEL'),
+                'sort' => 'YEAR',
+                'default' => true,
+            ],
         ];
     }
 
@@ -74,7 +57,7 @@ class BookGrid extends \CBitrixComponent implements Controllerable
     private function prepareGridData(): void
     {
         $this->arResult['HEADERS'] = $this->getHeaders();
-        $this->arResult['FILTER_ID'] = 'BOOK_GRID';
+        $this->arResult['FILTER_ID'] = 'DEALS_GRID';
 
         $gridOptions = new GridOptions($this->arResult['FILTER_ID']);
         $navParams = $gridOptions->getNavParams();
@@ -99,7 +82,7 @@ class BookGrid extends \CBitrixComponent implements Controllerable
             ],
         ]);
 
-        $bookIdsQuery = GarageTable::query()
+        $bookIdsQuery = DealTable::query()
             ->setSelect(['ID'])
             ->setFilter($filter)
             ->setLimit($nav->getLimit())
@@ -107,7 +90,7 @@ class BookGrid extends \CBitrixComponent implements Controllerable
             ->setOrder($sort['sort'])
         ;
 
-        $countQuery = GarageTable::query()
+        $countQuery = DealTable::query()
             ->setSelect(['ID'])
             ->setFilter($filter)
         ;
@@ -116,8 +99,8 @@ class BookGrid extends \CBitrixComponent implements Controllerable
         $bookIds = array_column($bookIdsQuery->exec()->fetchAll(), 'ID');
 
         if (!empty($bookIds)) {
-            $books = GarageTable::getList([
-                'filter' => ['ID' => $bookIds,'CONTACT_ID'=> $this ->arParams['DEAL_ID']] + $filter,
+            $books = DealTable::getList([
+                'filter' => ['ID' => $bookIds,'=UF_CRM_DEAL_GARAGE_TABLE_ITEM_ID' => $this ->arParams['id']] + $filter,
                 'select' => [
                     '*',
                 ],

@@ -7,7 +7,11 @@ use Bitrix\Main\Page\Asset;
 use \Bitrix\Crm\Service\Container;
 
 
+
 //\Bitrix\Main\UI\Extension::load('cab_log_events.common'); // вывод js событий
+CUtil::InitJSCore(array('jquery3', 'popup', 'ajax', 'date'));
+
+\Bitrix\Main\UI\Extension::load('cab_custom.common');
 
 
 if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
