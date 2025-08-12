@@ -122,6 +122,13 @@ class lab_crmcustomtab extends CModule
             '\\Lab\\Crmcustomtab\\Crm\\OnAfterCrmDealAddHandler',
             'OnAfterCrmDealAddHandler'
         );
+        $eventManager->registerEventHandler(
+            'main',
+            'OnProlog',
+            $this->MODULE_ID,
+            '\\Lab\\Crmcustomtab\\Crm\\OnPrologHandler',
+            'OnPrologHandler'
+        );
     }
 
     private function addEntityElements(string $entityClass): void
@@ -180,6 +187,20 @@ class lab_crmcustomtab extends CModule
             $this->MODULE_ID,
             '\\Lab\\Crmcustomtab\\Crm\\Handlers',
             'updateTabs'
+        );
+        $eventManager->registerEventHandler(
+            'crm',
+            'OnAfterCrmDealAdd',
+            $this->MODULE_ID,
+            '\\Lab\\Crmcustomtab\\Crm\\OnAfterCrmDealAddHandler',
+            'OnAfterCrmDealAddHandler'
+        );
+        $eventManager->registerEventHandler(
+            'main',
+            'OnProlog',
+            $this->MODULE_ID,
+            '\\Lab\\Crmcustomtab\\Crm\\OnPrologHandler',
+            'OnPrologHandler'
         );
     }
 

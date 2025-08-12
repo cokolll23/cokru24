@@ -5,7 +5,6 @@ use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\UI\PageNavigation;
 use Bitrix\Main\Grid\Options as GridOptions;
 use Bitrix\Main\UI\Filter\Options as FilterOptions;
-use Lab\Crmcustomtab\Orm\GarageTable;
 use Bitrix\Main\Loader;
 use Bitrix\Main\ORM\Query\Result;
 use Bitrix\Crm\DealTable;
@@ -13,15 +12,34 @@ use Bitrix\Crm\DealTable;
 Loader::includeModule('lab.crmcustomtab');
 class DealsGrid extends \CBitrixComponent implements Controllerable
 {
-    public function configureActions(): array
+    // обязательный метод предпроверки данных
+    public function configureActions()
     {
-        return [];
+        // устанавливаем фильтры (Bitrix\Main\Engine\ActionFilter\Authentication() и Bitrix\Main\Engine\ActionFilter\HttpMethod() и Bitrix\Main\Engine\ActionFilter\Csrf())
+        return [
+            'test' => [
+                'prefilters' => [
+                    new Bitrix\Main\Engine\ActionFilter\Authentication(),
+                    new Bitrix\Main\Engine\ActionFilter\HttpMethod(array(Bitrix\Main\Engine\ActionFilter\HttpMethod::METHOD_GET, Bitrix\Main\Engine\ActionFilter\HttpMethod::METHOD_POST)),
+                    new Bitrix\Main\Engine\ActionFilter\Csrf(),
+                ],
+                'postfilters' => []
+            ]
+        ];
+    }
+    // основной метод исполнитель, сюда передаются параметры из ajax запроса, навания точно такие же как и при отправке запроса, $_REQUEST['param1'] будет передан в $param1
+    public function testAction($param2 = 'qwe', $param1 = '')
+    {
+        return [
+            'asd' => $param1,
+            'count' => 200
+        ];
     }
 
-    private function getElementActions(): array
+   /* private function getElementActions(): array
     {
         return [];
-    }
+    }*/
 
     private function getHeaders(): array
     {
