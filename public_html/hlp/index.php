@@ -7,8 +7,9 @@ use Bitrix\Main\Entity;
 
 Loader::includeModule('crm');
 Loader::includeModule('lab.crmcustomtab');
+// todo перенести компонент в модуль
+// todo для того чтобы слайдер б24 грузил все стили и BX библиотеку оборачиваем в bitrix:ui.sidepanel.wrapper
 
-// для того чтобы слайдер б24 грузил все стили и BX библиотеку
 
 $APPLICATION->IncludeComponent(
     'bitrix:ui.sidepanel.wrapper',

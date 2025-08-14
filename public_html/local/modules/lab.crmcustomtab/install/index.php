@@ -108,12 +108,13 @@ class lab_crmcustomtab extends CModule
     {
         $eventManager = EventManager::getInstance();
 
-        $eventManager->registerEventHandler(
+        // создание вкладки в карточке сущности CRM
+        $eventManager->registerEventHandler(// /local/modules/lab.crmcustomtab/lib/Crm/Handlers.php
             'crm',
             'onEntityDetailsTabsInitialized',
             $this->MODULE_ID,
-            '\\Lab\\Crmcustomtab\\Crm\\Handlers',
-            'updateTabs'
+            '\\Lab\\Crmcustomtab\\Crm\\Handlers',//класс
+            'updateTabs' // метод
         );
         $eventManager->registerEventHandler(
             'crm',
@@ -122,12 +123,14 @@ class lab_crmcustomtab extends CModule
             '\\Lab\\Crmcustomtab\\Crm\\OnAfterCrmDealAddHandler',
             'OnAfterCrmDealAddHandler'
         );
+
+        // todo зарегить кастомные js расширения из модуля в обработчике
         $eventManager->registerEventHandler(
             'main',
             'OnProlog',
             $this->MODULE_ID,
-            '\\Lab\\Crmcustomtab\\Crm\\OnPrologHandler',
-            'OnPrologHandler'
+            '\\Lab\\Crmcustomtab\\Crm\\OnPrologHandler',// обработчик класс
+            'OnPrologHandler'// метод класса
         );
     }
 

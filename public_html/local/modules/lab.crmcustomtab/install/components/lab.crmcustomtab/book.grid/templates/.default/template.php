@@ -12,6 +12,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
  * @global $component
  */
 
+pretty_print($arResult);
+
 \Bitrix\Main\Loader::includeModule('ui');
 $APPLICATION->IncludeComponent(
     'bitrix:main.ui.filter',

@@ -1,41 +1,21 @@
 <?php
-// todo перенести компонент в модуль
+
 use Bitrix\Main\Engine\Contract\Controllerable;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\UI\PageNavigation;
 use Bitrix\Main\Grid\Options as GridOptions;
 use Bitrix\Main\UI\Filter\Options as FilterOptions;
+use Lab\Crmcustomtab\Orm\BookTable;
+use Lab\Crmcustomtab\Orm\GarageTable;
 use Bitrix\Main\Loader;
 use Bitrix\Main\ORM\Query\Result;
-use Bitrix\Crm\DealTable;
 
 Loader::includeModule('lab.crmcustomtab');
-
-class DealsGrid extends \CBitrixComponent implements Controllerable
+class BookGrid extends \CBitrixComponent implements Controllerable
 {
-    // обязательный метод предпроверки данных
-    public function configureActions()
+    public function configureActions(): array
     {
-        // устанавливаем фильтры (Bitrix\Main\Engine\ActionFilter\Authentication() и Bitrix\Main\Engine\ActionFilter\HttpMethod() и Bitrix\Main\Engine\ActionFilter\Csrf())
-        return [
-            'test' => [
-                'prefilters' => [
-                    new Bitrix\Main\Engine\ActionFilter\Authentication(),
-                    new Bitrix\Main\Engine\ActionFilter\HttpMethod(array(Bitrix\Main\Engine\ActionFilter\HttpMethod::METHOD_GET, Bitrix\Main\Engine\ActionFilter\HttpMethod::METHOD_POST)),
-                    new Bitrix\Main\Engine\ActionFilter\Csrf(),
-                ],
-                'postfilters' => []
-            ]
-        ];
-    }
-
-    // основной метод исполнитель, сюда передаются параметры из ajax запроса, навания точно такие же как и при отправке запроса, $_REQUEST['param1'] будет передан в $param1
-    public function testAction($param2 = 'qwe', $param1 = '')
-    {
-        return [
-            'asd' => $param1,
-            'count' => 200
-        ];
+        return [];
     }
 
     private function getElementActions(): array
@@ -47,49 +27,41 @@ class DealsGrid extends \CBitrixComponent implements Controllerable
     {
         return [
             [
-                'id' => 'DATE_CREATE',
-                'name' => Loc::getMessage('DEALS_GRID_DATE_CREATE_LABEL'),
-                'sort' => 'DATE_CREATE',
-                'default' => true,
-            ],
-            [
                 'id' => 'ID',
                 'name' => 'ID',
                 'sort' => 'ID',
                 'default' => true,
             ],
             [
-                'id' => 'TITLE',
-                'name' => Loc::getMessage('DEALS_GRID_TITLE_LABEL'),
-                'sort' => 'TITLE',
+                'id' => 'MARKA',
+                'name' => Loc::getMessage('BOOK_GRID_BOOK_TITLE_LABEL'),
+                'sort' => 'MARKA',
                 'default' => true,
             ],
             [
                 'id' => 'MODEL',
-                'name' => Loc::getMessage('DEALS_GRID_MODEL_LABEL'),
+                'name' => Loc::getMessage('BOOK_GRID_BOOK_MODEL_LABEL'),
                 'sort' => 'MODEL',
                 'default' => true,
             ],
             [
-                'id' => 'VIN',
-                'name' => Loc::getMessage('DEALS_GRID_VIN_LABEL'),
-                'sort' => 'VIN',
-                'default' => true,
-            ],
-
-
-            [
                 'id' => 'YEAR',
-                'name' => Loc::getMessage('DEALS_GRID_YEAR_LABEL'),
+                'name' => Loc::getMessage('BOOK_GRID_BOOK_PUBLISHING_YEAR_LABEL'),
                 'sort' => 'YEAR',
                 'default' => true,
             ],
             [
-                'id' => 'MILEAGE',
-                'name' => Loc::getMessage('DEALS_GRID_MILEAGE_LABEL'),
-                'sort' => 'MILEAGE',
+                'id' => 'COLOR',
+                'name' => Loc::getMessage('BOOK_GRID_BOOK_COLOR_LABEL'),
+                'sort' => 'COLOR',
                 'default' => true,
             ],
+            [
+                'id' => 'MILEAGE',
+                'name' => Loc::getMessage('BOOK_GRID_BOOK_MILEAGE_LABEL'),
+                'default' => true,
+            ],
+
         ];
     }
 
@@ -102,7 +74,7 @@ class DealsGrid extends \CBitrixComponent implements Controllerable
     private function prepareGridData(): void
     {
         $this->arResult['HEADERS'] = $this->getHeaders();
-        $this->arResult['FILTER_ID'] = 'DEALS_GRID';
+        $this->arResult['FILTER_ID'] = 'BOOK_GRID';
 
         $gridOptions = new GridOptions($this->arResult['FILTER_ID']);
         $navParams = $gridOptions->getNavParams();
@@ -127,47 +99,27 @@ class DealsGrid extends \CBitrixComponent implements Controllerable
             ],
         ]);
 
-        $bookIdsQuery = DealTable::query()
+        $bookIdsQuery = GarageTable::query()
             ->setSelect(['ID'])
             ->setFilter($filter)
             ->setLimit($nav->getLimit())
             ->setOffset($nav->getOffset())
-            ->setOrder($sort['sort']);
+            ->setOrder($sort['sort'])
+        ;
 
-        $countQuery = DealTable::query()
+        $countQuery = GarageTable::query()
             ->setSelect(['ID'])
-            ->setFilter($filter);
+            ->setFilter($filter)
+        ;
         $nav->setRecordCount($countQuery->queryCountTotal());
 
         $bookIds = array_column($bookIdsQuery->exec()->fetchAll(), 'ID');
 
-
         if (!empty($bookIds)) {
-
-            $dealByGarageTableId = DealTable::getList([
-                'filter' => ['=UF_CRM_DEAL_GARAGE_TABLE_ITEM_ID' => $this->arParams['id']],
+            $books = GarageTable::getList([
+                'filter' => ['ID' => $bookIds,'CONTACT_ID'=> $this ->arParams['DEAL_ID']] + $filter,
                 'select' => [
-                    'ID',
-                    'UF_CRM_DEAL_VIN',
-                ],
-                'order' => [],
-            ]);
-            if ($dealUF_CRM_DEAL_VIN = $dealByGarageTableId->fetch()) {
-                $UF_CRM_DEAL_VIN =$dealUF_CRM_DEAL_VIN['UF_CRM_DEAL_VIN'];
-
-            }
-
-            $books = DealTable::getList([
-                'filter' => ['ID' => $bookIds, '=UF_CRM_DEAL_VIN' => $UF_CRM_DEAL_VIN] + $filter,
-                'select' => [
-                    'ID',
-                    'TITLE',
-                    'DATE_CREATE',
-                    'UF_CRM_DEAL_MODEL',
-                    'UF_CRM_DEAL_YEAR',
-                    'UF_CRM_DEAL_COLOR',
-                    'UF_CRM_DEAL_MILEAGE',
-                    'UF_CRM_DEAL_VIN',
+                    '*',
                 ],
                 'order' => $sort['sort'],
             ]);
@@ -224,13 +176,11 @@ class DealsGrid extends \CBitrixComponent implements Controllerable
 
                 $groupedBooks[$bookId] = [
                     'ID' => $book['ID'],
-                    'TITLE' => $book['TITLE'],
-                    'DATE_CREATE' => $book['DATE_CREATE'],
-                    'MODEL' => $book['UF_CRM_DEAL_MODEL'],
-                    'YEAR' => $book['UF_CRM_DEAL_YEAR'],
-                    'COLOR' => $book['UF_CRM_DEAL_COLOR'],
-                    'MILEAGE' => $book['UF_CRM_DEAL_MILEAGE'],
-                    'VIN' => $book['UF_CRM_DEAL_VIN'],
+                    'MARKA' => $book['MARKA'],
+                    'MODEL' => $book['MODEL'],
+                    'YEAR' => $book['YEAR'],
+                    'COLOR' => $book['COLOR'],
+                    'MILEAGE' => $book['MILEAGE'],
                     //'AUTHORS' => []
                 ];
             }
@@ -243,13 +193,11 @@ class DealsGrid extends \CBitrixComponent implements Controllerable
             $gridList[] = [
                 'data' => [
                     'ID' => $book['ID'],
-                    'TITLE' => $book['TITLE'],
-                    'DATE_CREATE' => $book['DATE_CREATE'],
+                    'MARKA' => $book['MARKA'],
                     'MODEL' => $book['MODEL'],
                     'YEAR' => $book['YEAR'],
                     'COLOR' => $book['COLOR'],
                     'MILEAGE' => $book['MILEAGE'],
-                    'VIN' => $book['VIN'],
                     /* 'AUTHORS' => implode(', ', $book['AUTHORS']),
                      'PUBLISH_DATE' => $book['PUBLISH_DATE']->format('d.m.Y'),*/
                 ],

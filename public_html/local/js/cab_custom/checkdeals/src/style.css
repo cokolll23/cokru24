@@ -1,0 +1,10 @@
+#BOOK_GRID_table tr{
+    cursor: pointer;
+}
+.err{
+    border-color: red;
+}
+.block{
+    border: 2px solid red;
+    padding: 10px;
+}

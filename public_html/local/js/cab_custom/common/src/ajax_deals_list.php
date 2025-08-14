@@ -4,24 +4,27 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.
 use Bitrix\Crm\DealTable;
 use Bitrix\Main\Loader;
 use Bitrix\Main\Entity;
+use Lab\Crmcustomtab\Orm\GarageTable;
 
 Loader::includeModule('crm');
 Loader::includeModule('lab.crmcustomtab');
 
-ob_start();
+$request = \Bitrix\Main\Application::getInstance()->getContext()->getRequest();
 
+if ($request->isAjaxRequest() && $_REQUEST['act'] == 'getVinDeal') {
 
-
-$APPLICATION->IncludeComponent(
-    "lab.crmcustomtab:deals.grid",
-    "",
-    array(
-
-    ),
-    false
-);
-$html = ob_get_contents();
-ob_end_clean();
+    $iGarageTblId = $_REQUEST['id'];
+    $arVinDeal = GarageTable::getList([
+        'filter' => ['ID' => $iGarageTblId],
+        'select' => [
+            'UF_CRM_DEAL_VIN',
+        ],
+        'order' => [],
+    ]);
+    if ($itemVinDeal = $arVinDeal->fetch()) {
+        $VinDeal = $itemVinDeal;
+    }
+}
 /*if ($_REQUEST['act'] == 'form') {
     $iGarageTableId = $_REQUEST['iGarageTableId'];
     $deals = DealTable::getList([
@@ -35,9 +38,8 @@ ob_end_clean();
     echo json_encode($deals);
 }*/
 $res = array(
-    'html' => $html,
-
+    'html' => $arVinDeal,
 );
-//echo \Bitrix\Main\Web\Json::encode($res);
-echo $html;
+echo \Bitrix\Main\Web\Json::encode( $VinDeal);
+//echo  $VinDeal;
 die();
