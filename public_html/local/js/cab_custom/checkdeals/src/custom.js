@@ -1,5 +1,5 @@
 BX.ready(function () {
-//alert('Hi crazy');VF1LA0H53246666666
+//alert('Hi crazy');VF1LA0H5324666666
     // VF1LA0H5324321010
 // todo перенести компонент в модуль
     $('body').on('input', 'form[name="deal_0_details_editor_form"] input[name="UF_CRM_DEAL_VIN"]', function (e) {

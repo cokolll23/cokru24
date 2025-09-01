@@ -31,9 +31,9 @@ class ExtensionLoader
 }*/
 
 //\Bitrix\Main\UI\Extension::load('cab_log_events.common'); // вывод js событий
-CUtil::InitJSCore(array('jquery3', 'popup', 'ajax', 'date'));
-\Bitrix\Main\UI\Extension::load('cab_custom.common');
-\Bitrix\Main\UI\Extension::load('cab_custom.checkdeals');
+//CUtil::InitJSCore(array('jquery3', 'popup', 'ajax', 'date'));
+//\Bitrix\Main\UI\Extension::load('cab_custom.common');
+//\Bitrix\Main\UI\Extension::load('cab_custom.checkdeals');
 
 // todo End
 
